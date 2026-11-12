@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111111"><title>Cardápio | Chopperia Gorde</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="#"><span class="brand-mark">G</span><span><b>CHOPPERIA GORDE</b><small>CARDÁPIO DIGITAL</small></span></a>
+  <a class="admin-link" href="admin.html">Área administrativa</a>
+</header>
+<section class="hero">
+  <div class="hero-copy"><span class="eyebrow">BEM-VINDO À GORDE</span><h1>Seu pedido.<br><em>Do seu jeito.</em></h1>
+  <p>Escolha seus produtos e finalize seu pedido pelo WhatsApp.</p><a class="hero-cta" href="#cardapio">VER CARDÁPIO ↓</a></div>
+  <div class="hero-stamp">CHOPPERIA<br><strong>GORDE</strong><small>DESDE 2024</small></div>
+</section>
+<main class="container" id="cardapio">
+  <div class="section-heading"><div><span class="eyebrow">ESCOLHA SEUS FAVORITOS</span><h2>Nosso cardápio</h2></div><span class="open-pill">● PEDIDOS ONLINE</span></div>
+  <div class="search-wrap"><input id="search" type="search" placeholder="Buscar produto..."></div>
+  <nav id="categories" class="categories"></nav>
+  <section id="products" class="products"><p class="muted">Carregando produtos...</p></section>
+</main>
+<aside class="cart-bar" id="cartBar" hidden><div><b id="cartCount">0 itens</b><small id="cartTotal">R$ 0,00</small></div><button id="openCart">VER CARRINHO →</button></aside>
+<div class="modal-backdrop" id="cartModal" hidden>
+ <section class="modal">
+  <button class="close" id="closeCart" aria-label="Fechar">×</button><span class="eyebrow">SEU PEDIDO</span><h2>Meu carrinho</h2>
+  <div id="cartItems"></div>
+  <div class="cart-summary"><span>Subtotal</span><b id="subtotal">R$ 0,00</b></div>
+  <div class="cart-summary"><span>Entrega</span><b id="delivery">R$ 5,00</b></div>
+  <div class="cart-summary total"><span>Total</span><b id="grandTotal">R$ 5,00</b></div>
+  <form id="checkoutForm">
+   <label>Seu nome<input id="customerName" required placeholder="Nome completo"></label>
+   <label>Endereço para entrega<input id="customerAddress" required placeholder="Rua, número e bairro"></label>
+   <label>Forma de pagamento<select id="payment"><option>Pix</option><option>Cartão</option><option>Dinheiro</option></select></label>
+   <label>Observações<textarea id="notes" placeholder="Ponto de referência, troco para..."></textarea></label>
+   <button class="primary full" type="submit">FINALIZAR PELO WHATSAPP</button>
+  </form>
+  <p class="fine-print">Ao finalizar, o WhatsApp será aberto com os detalhes do pedido. Confira e envie a mensagem.</p>
+ </section>
+</div>
+<footer><b>CHOPPERIA GORDE</b><p>Rua Daniel Cerri, 1049 — Jd. Paraná / Brasilândia</p><small>Consumo e entrega sujeitos à disponibilidade.</small></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script><script src="app.js"></script>
+</body></html>

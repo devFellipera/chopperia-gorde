@@ -25,3 +25,9 @@
 - A finalização abre o WhatsApp com a mensagem preenchida; o cliente ainda precisa tocar em **Enviar** no WhatsApp.
 - Não coloque a chave `service_role` no navegador. Use somente a chave pública anon/publishable.
 - Para segurança, mantenha a autenticação e as políticas RLS do SQL.
+<<<<<<< HEAD
+=======
+
+
+https://devfellipera.github.io/chopperia-gorde/
+>>>>>>> origin/main

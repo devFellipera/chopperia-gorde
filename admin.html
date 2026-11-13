@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111111">
+
+  <title>Admin | Chopperia Gorde</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="admin-body">
+
+  <header class="topbar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">G</span>
+
+      <span>
+        <b>CHOPPERIA GORDE</b>
+        <small>PAINEL ADMINISTRATIVO</small>
+      </span>
+    </a>
+
+    <a class="admin-link" href="index.html">
+      ← Voltar ao cardápio
+    </a>
+  </header>
+
+  <main class="admin-container">
+
+    <!-- LOGIN -->
+    <section id="loginPanel" class="admin-panel narrow">
+
+      <span class="eyebrow">ACESSO RESTRITO</span>
+
+      <h1>Entrar no painel</h1>
+
+      <form id="loginForm">
+
+        <label>
+          E-mail
+          <input
+            id="email"
+            type="email"
+            required
+            autocomplete="username"
+            placeholder="seu@email.com"
+          >
+        </label>
+
+        <label>
+          Senha
+          <input
+            id="password"
+            type="password"
+            required
+            autocomplete="current-password"
+            placeholder="Digite sua senha"
+          >
+        </label>
+
+        <button class="primary full" type="submit">
+          ENTRAR
+        </button>
+
+      </form>
+
+      <p class="muted">
+        O acesso é feito por uma conta autorizada no Supabase.
+      </p>
+
+    </section>
+
+    <!-- PAINEL ADMINISTRATIVO -->
+    <section id="dashboard" hidden>
+
+      <div class="section-heading">
+
+        <div>
+          <span class="eyebrow">GERENCIE SUA LOJA</span>
+          <h1>Produtos</h1>
+        </div>
+
+        <button id="logout" class="secondary" type="button">
+          SAIR
+        </button>
+
+      </div>
+
+      <div class="admin-grid">
+
+        <!-- FORMULÁRIO DE PRODUTOS -->
+        <form id="productForm" class="admin-panel">
+
+          <h2 id="formTitle">Adicionar produto</h2>
+
+          <input
+            id="productId"
+            type="hidden"
+          >
+
+          <label>
+            Nome do produto
+            <input
+              id="pName"
+              type="text"
+              required
+              placeholder="Ex.: Gin com energético"
+            >
+          </label>
+
+          <label>
+            Categoria
+            <input
+              id="pCategory"
+              type="text"
+              required
+              placeholder="Ex.: Gin, Whisky, Cervejas"
+            >
+          </label>
+
+          <label>
+            Preço (R$)
+            <input
+              id="pPrice"
+              type="number"
+              min="0.01"
+              step="0.01"
+              required
+              placeholder="0.00"
+            >
+          </label>
+
+          <label>
+            Descrição
+            <textarea
+              id="pDescription"
+              placeholder="Descrição do produto"
+            ></textarea>
+          </label>
+
+          <label>
+            URL da foto (opcional)
+            <input
+              id="pImage"
+              type="url"
+              placeholder="https://..."
+            >
+          </label>
+
+          <label class="check-label">
+            <input
+              id="pAvailable"
+              type="checkbox"
+              checked
+            >
+            Produto disponível
+          </label>
+
+          <div class="form-actions">
+
+            <button class="primary" type="submit">
+              SALVAR PRODUTO
+            </button>
+
+            <button
+              class="secondary"
+              type="button"
+              id="clearForm"
+            >
+              LIMPAR
+            </button>
+
+          </div>
+
+        </form>
+
+        <!-- LISTA DE PRODUTOS -->
+        <section class="admin-panel">
+
+          <h2>Produtos cadastrados</h2>
+
+          <div id="adminProducts">
+            <p class="muted">Carregando produtos...</p>
+          </div>
+
+        </section>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- CONFIGURAÇÃO -->
+  <script src="config.js"></script>
+
+  <!-- PAINEL ADMINISTRATIVO -->
+  <script src="admin.js"></script>
+
+</body>
+</html>

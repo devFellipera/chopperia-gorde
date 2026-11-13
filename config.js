@@ -4,6 +4,6 @@ window.GORDE_CONFIG = {
   whatsapp: "5511932195719",
   deliveryFee: 5.00,
   supabaseUrl: "https://devfellipera.github.io/chopperia-gorde/",
-  supabaseAnonKey: "sb_publishable_p6LVbnrdQu0I8Sna88J00w_-M5WwWYT"
+  supabaseAnonKey: "sb_publishable_A0gtRD3eXbin-iRNh3lD0g_oiWKjT7W"
 };
 

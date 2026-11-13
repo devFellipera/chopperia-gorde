@@ -111,6 +111,28 @@ a {
   color: white;
 }
 
+.brand-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 600px) {
+  .brand-logo {
+    width: 48px;
+    height: 48px;
+  }
+}
+
 /* HERO */
 
 .hero {
@@ -925,4 +947,37 @@ footer small {
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
   }
+}
+
+.category-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin: 20px 0;
+  color: #ccc;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.category-filter select {
+  width: 100%;
+  padding: 14px 16px;
+  background: #191919;
+  color: #fff;
+  border: 1px solid #353535;
+  border-radius: 10px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.category-filter select:focus {
+  border-color: #d72b2b;
+  box-shadow: 0 0 0 3px rgba(215, 43, 43, .12);
+}
+
+.category-filter select option {
+  background: #191919;
+  color: #fff;
 }

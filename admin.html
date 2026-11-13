@@ -177,18 +177,24 @@
 
         </form>
 
-        <!-- LISTA DE PRODUTOS -->
-        <section class="admin-panel">
+      <!-- LISTA DE PRODUTOS -->
+    <section class="admin-panel products-panel">
 
-          <h2>Produtos cadastrados</h2>
+        <h2>Produtos cadastrados</h2>
 
-          <div id="adminProducts">
-            <p class="muted">Carregando produtos...</p>
-          </div>
+        <label class="category-filter">
+          Filtrar produtos por categoria
 
-        </section>
+          <select id="categoryFilter">
+            <option value="all">Todas as categorias</option>
+          </select>
+        </label>
 
-      </div>
+        <div id="adminProducts">
+          <p class="muted">Carregando produtos...</p>
+        </div>
+
+    
 
     </section>
 

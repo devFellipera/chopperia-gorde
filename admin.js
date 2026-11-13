@@ -358,4 +358,3 @@ $('productForm').onsubmit=async e=>{e.preventDefault();const row={name:$('pName'
 async function del(id){if(!confirm('Excluir este produto?'))return;const {error}=await sb.from('products').delete().eq('id',id);if(error)msg(error.message);else load();}
 session();
 })();
->>>>>>> origin/main

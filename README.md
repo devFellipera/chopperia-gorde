@@ -1,6 +1,7 @@
 # Cardápio Digital — Chopperia Gorde
 
 ## O que está incluído
+
 - `index.html`: cardápio público para clientes.
 - `admin.html`: painel para cadastrar, editar e excluir produtos.
 - `config.js`: configura WhatsApp, taxa de entrega e Supabase.
@@ -9,6 +10,7 @@
 - `style.css`: visual responsivo para celular e computador.
 
 ## Configuração
+
 1. Crie um projeto no Supabase.
 2. No SQL Editor, execute todo o conteúdo de `supabase.sql`.
 3. Em Authentication > Users, crie o usuário administrador com e-mail e senha.
@@ -20,14 +22,15 @@
 7. Publique os arquivos em uma hospedagem HTTPS (Apache/XAMPP local serve para testes).
 
 ## Observações
+
 - A taxa de entrega está configurada inicialmente em R$ 5,00.
 - Sem Supabase configurado, a página pública mostra produtos demonstrativos e o painel administrativo não permite salvar.
 - A finalização abre o WhatsApp com a mensagem preenchida; o cliente ainda precisa tocar em **Enviar** no WhatsApp.
 - Não coloque a chave `service_role` no navegador. Use somente a chave pública anon/publishable.
 - Para segurança, mantenha a autenticação e as políticas RLS do SQL.
-<<<<<<< HEAD
-=======
-
+  <<<<<<< HEAD
+  =======
 
 https://devfellipera.github.io/chopperia-gorde/
->>>>>>> origin/main
+
+> > > > > > > origin/main

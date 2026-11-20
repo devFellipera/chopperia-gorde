@@ -1,7 +1,7 @@
 // Configurações da Chopperia Gorde
 window.GORDE_CONFIG = {
 
-  whatsapp: "5511932195719",
+  whatsapp: "551193",
   
   deliveryFee: 5.00,
 

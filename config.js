@@ -8,12 +8,7 @@ window.GORDE_CONFIG = {
     // Pedido mínimo
     minimumOrder: 20.00,
 
-    // Limite de pedidos
-    orderLimit: {
-        enabled: true,
-        maxOrders: 200,
-        message: "Limite de pedidos atingido. Tente novamente mais tarde."
-    },
+    
 
     supabaseUrl: "https://ijcsdktsrcdwasrecztq.supabase.co",
 

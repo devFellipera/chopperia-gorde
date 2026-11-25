@@ -20,7 +20,16 @@
 
   let products = [];
   let coupons = [];
+  let orders = [];
   let selectedCategory = "all";
+
+  const ORDER_STATUSES = [
+    "Novo",
+    "Em preparo",
+    "Saiu para entrega",
+    "Finalizado",
+    "Cancelado"
+  ];
 
   function msg(text) {
     alert(text);
@@ -63,7 +72,25 @@
       .slice(0, 16);
   }
 
-  // SESSÃO
+  function formatDate(value) {
+    if (!value) return "Data não informada";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+      return "Data inválida";
+    }
+
+    return date.toLocaleString("pt-BR", {
+      dateStyle: "short",
+      timeStyle: "short"
+    });
+  }
+
+  // =========================
+  // SESSÃO E PAINEL
+  // =========================
+
   async function session() {
     if (!sb) {
       msg("Erro na configuração do Supabase. Confira o config.js.");
@@ -82,28 +109,53 @@
     }
   }
 
-  // MOSTRAR PAINEL
   async function show() {
     $("loginPanel").hidden = true;
     $("dashboard").hidden = false;
 
     await Promise.all([
       loadProducts(),
-      loadCoupons()
+      loadCoupons(),
+      loadOrders()
     ]);
+
+    activateTab(
+      localStorage.getItem("gorde_admin_tab") || "products"
+    );
   }
 
+  // =========================
   // ABAS
+  // =========================
+
+  function activateTab(tab) {
+    const selectedTab = [
+      "products",
+      "coupons",
+      "orders"
+    ].includes(tab) ? tab : "products";
+
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.classList.toggle(
+        "active",
+        button.dataset.tab === selectedTab
+      );
+    });
+
+    $("productsSection").hidden = selectedTab !== "products";
+    $("couponsSection").hidden = selectedTab !== "coupons";
+    $("ordersSection").hidden = selectedTab !== "orders";
+
+    localStorage.setItem("gorde_admin_tab", selectedTab);
+
+    if (selectedTab === "orders") {
+      loadOrders();
+    }
+  }
+
   document.querySelectorAll("[data-tab]").forEach(button => {
     button.addEventListener("click", () => {
-      const tab = button.dataset.tab;
-
-      document.querySelectorAll("[data-tab]").forEach(item => {
-        item.classList.toggle("active", item === button);
-      });
-
-      $("productsSection").hidden = tab !== "products";
-      $("couponsSection").hidden = tab !== "coupons";
+      activateTab(button.dataset.tab);
     });
   });
 
@@ -112,6 +164,8 @@
   // =========================
 
   async function loadProducts() {
+    if (!sb) return;
+
     const { data, error } = await sb
       .from("products")
       .select("*")
@@ -123,7 +177,7 @@
       return;
     }
 
-        products = data || [];
+    products = data || [];
     renderProducts();
   }
 
@@ -239,11 +293,7 @@
     $("formTitle").textContent = "Adicionar produto";
   }
 
-  const clearFormButton = $("clearForm");
-
-if (clearFormButton) {
-  clearFormButton.onclick = clearProductForm;
-}
+  $("clearForm").onclick = clearProductForm;
 
   $("categoryFilter").addEventListener("change", event => {
     selectedCategory = event.target.value;
@@ -340,6 +390,8 @@ if (clearFormButton) {
   // =========================
 
   async function loadCoupons() {
+    if (!sb) return;
+
     const { data, error } = await sb
       .from("coupons")
       .select("*")
@@ -454,7 +506,7 @@ if (clearFormButton) {
 
     $("couponFormTitle").textContent = "Editar cupom";
 
-    document.querySelector('[data-tab="coupons"]').click();
+    activateTab("coupons");
 
     $("couponForm").scrollIntoView({
       behavior: "smooth",
@@ -661,13 +713,261 @@ if (clearFormButton) {
   }
 
   // =========================
+  // PEDIDOS
+  // =========================
+
+  async function loadOrders() {
+    if (!sb) return;
+
+    $("adminOrders").innerHTML =
+      '<p class="muted">Carregando pedidos...</p>';
+
+    const { data, error } = await sb
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Erro ao carregar pedidos:", error);
+
+      $("adminOrders").innerHTML = `
+        <p class="muted">
+          Não foi possível carregar os pedidos.
+          Verifique as permissões da tabela orders.
+        </p>
+        <p class="muted">${esc(error.message)}</p>
+      `;
+      return;
+    }
+
+    orders = data || [];
+    renderOrders();
+  }
+
+  function renderOrders() {
+    const statusFilter = $("orderStatusFilter").value;
+    const typeFilter = $("orderTypeFilter").value;
+
+    let filtered = [...orders];
+
+    if (statusFilter !== "all") {
+      filtered = filtered.filter(order =>
+        order.status === statusFilter
+      );
+    }
+
+    if (typeFilter === "normal") {
+      filtered = filtered.filter(order => !order.is_test);
+    }
+
+    if (typeFilter === "test") {
+      filtered = filtered.filter(order => order.is_test);
+    }
+
+    if (!filtered.length) {
+      $("adminOrders").innerHTML = `
+        <p class="muted">
+          Nenhum pedido encontrado com esses filtros.
+        </p>
+      `;
+      return;
+    }
+
+    $("adminOrders").innerHTML = filtered.map(order => {
+      const items = Array.isArray(order.items)
+        ? order.items
+        : [];
+
+      const itemsHtml = items.length
+        ? items.map(item => `
+            <div class="order-item">
+              <span>
+                ${Number(item.quantity) || 0}x
+                ${esc(item.name)}
+              </span>
+              <b>${money(
+                (Number(item.price) || 0) *
+                (Number(item.quantity) || 0)
+              )}</b>
+            </div>
+          `).join("")
+        : '<p class="muted">Itens não disponíveis.</p>';
+
+      const statusOptions = ORDER_STATUSES.map(status => `
+        <option
+          value="${esc(status)}"
+          ${order.status === status ? "selected" : ""}
+        >
+          ${esc(status)}
+        </option>
+      `).join("");
+
+      return `
+        <article class="admin-order">
+
+          <div class="admin-order-header">
+            <div>
+              <h3>
+                PEDIDO #${esc(order.order_number)}
+              </h3>
+
+              <small>
+                ${esc(order.month_key || "")}
+                · ${formatDate(order.created_at)}
+              </small>
+            </div>
+
+            <div class="admin-order-labels">
+              <span class="order-status">
+                ${esc(order.status)}
+              </span>
+
+              ${order.is_test
+                ? '<span class="order-test">TESTE</span>'
+                : '<span class="order-normal">NORMAL</span>'
+              }
+            </div>
+          </div>
+
+          <div class="admin-order-customer">
+            <p><b>Cliente:</b> ${esc(order.customer_name)}</p>
+            <p><b>Endereço:</b> ${esc(order.customer_address)}</p>
+            <p><b>Pagamento:</b> ${esc(order.payment_method)}</p>
+          </div>
+
+          <div class="admin-order-items">
+            <b>PRODUTOS</b>
+            ${itemsHtml}
+          </div>
+
+          <div class="admin-order-totals">
+            <p>
+              <span>Subtotal</span>
+              <b>${money(order.subtotal)}</b>
+            </p>
+
+            ${Number(order.discount) > 0 ? `
+              <p>
+                <span>Desconto ${order.coupon_code
+                  ? `(${esc(order.coupon_code)})`
+                  : ""
+                }</span>
+                <b>- ${money(order.discount)}</b>
+              </p>
+            ` : ""}
+
+            <p>
+              <span>Entrega</span>
+              <b>${money(order.delivery_fee)}</b>
+            </p>
+
+            <p class="order-grand-total">
+              <span>TOTAL</span>
+              <b>${money(order.total)}</b>
+            </p>
+          </div>
+
+          ${order.notes ? `
+            <div class="admin-order-notes">
+              <b>Observações:</b>
+              ${esc(order.notes)}
+            </div>
+          ` : ""}
+
+          <div class="admin-order-change">
+            <label>
+              Alterar status do pedido
+              <select
+                class="order-status-select"
+                data-order-status="${esc(order.id)}"
+              >
+                ${statusOptions}
+              </select>
+            </label>
+          </div>
+
+        </article>
+      `;
+    }).join("");
+
+    $("adminOrders")
+      .querySelectorAll("[data-order-status]")
+      .forEach(select => {
+        select.addEventListener("change", () => {
+          updateOrderStatus(
+            select.dataset.orderStatus,
+            select.value,
+            select
+          );
+        });
+      });
+  }
+
+  async function updateOrderStatus(id, newStatus, select) {
+    if (!sb) return;
+
+    if (!ORDER_STATUSES.includes(newStatus)) {
+      msg("Status inválido.");
+      await loadOrders();
+      return;
+    }
+
+    const order = orders.find(item =>
+      String(item.id) === String(id)
+    );
+
+    if (!order) {
+      msg("Pedido não encontrado.");
+      await loadOrders();
+      return;
+    }
+
+    if (order.status === newStatus) return;
+
+    select.disabled = true;
+
+    const { data, error } = await sb
+      .from("orders")
+      .update({ status: newStatus })
+      .eq("id", id)
+      .select()
+      .maybeSingle();
+
+    if (error) {
+      console.error("Erro ao atualizar pedido:", error);
+
+      msg("Não foi possível atualizar o pedido: " + error.message);
+      await loadOrders();
+      return;
+    }
+
+    if (!data) {
+      msg("Nenhum pedido foi atualizado. Verifique as permissões.");
+      await loadOrders();
+      return;
+    }
+
+    await loadOrders();
+    msg(`Pedido #${order.order_number} atualizado para "${newStatus}".`);
+  }
+
+  $("refreshOrders").onclick = loadOrders;
+
+  $("orderStatusFilter").addEventListener("change", renderOrders);
+
+  $("orderTypeFilter").addEventListener("change", renderOrders);
+
+  // =========================
   // LOGIN E LOGOUT
   // =========================
 
   $("loginForm").onsubmit = async event => {
     event.preventDefault();
 
-    if (!sb) return;
+    if (!sb) {
+      msg("Confira a configuração do Supabase.");
+      return;
+    }
 
     const { error } = await sb.auth.signInWithPassword({
       email: $("email").value.trim(),
@@ -695,47 +995,10 @@ if (clearFormButton) {
     $("loginPanel").hidden = false;
   };
 
-
   // =========================
-  // ABAS - MANTER ÚLTIMA ABA
-  // =========================
-
-  function activateTab(tab) {
-    const selectedTab = tab === "coupons" ? "coupons" : "products";
-
-    document.querySelectorAll("[data-tab]").forEach(button => {
-      button.classList.toggle(
-        "active",
-        button.dataset.tab === selectedTab
-      );
-    });
-
-    const productsSection = $("productsSection");
-    const couponsSection = $("couponsSection");
-
-    if (productsSection) {
-      productsSection.hidden = selectedTab !== "products";
-    }
-
-    if (couponsSection) {
-      couponsSection.hidden = selectedTab !== "coupons";
-    }
-
-    localStorage.setItem("gorde_admin_tab", selectedTab);
-  }
-
-  document.querySelectorAll("[data-tab]").forEach(button => {
-    button.addEventListener("click", () => {
-      activateTab(button.dataset.tab);
-    });
-  });
-
-  // Recupera a última aba escolhida
-  const savedTab = localStorage.getItem("gorde_admin_tab") || "products";
-  activateTab(savedTab);
-
-
-
   // INICIAR
+  // =========================
+
   session();
+
 })();

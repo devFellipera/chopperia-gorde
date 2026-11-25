@@ -1061,46 +1061,132 @@ footer small {
   }
 }
 
-/* CUPOM DE DESCONTO */
-.coupon-box {
-  margin: 18px 0;
-  padding: 14px;
-  background: #171719;
-  border: 1px solid rgba(255,255,255,.10);
+/* =========================
+   PEDIDOS - ADMIN
+========================= */
+
+.admin-order {
+  background: #151518;
+  border: 1px solid #303036;
   border-radius: 12px;
+  padding: 18px;
+  margin-top: 16px;
 }
 
-.coupon-box label {
-  display: block;
-  margin-bottom: 10px;
+.admin-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #303036;
+}
+
+.admin-order-header h3 {
+  margin: 0 0 5px;
+  color: #e32636;
+}
+
+.admin-order-header small,
+.admin-order-customer p {
+  color: #b8b8bd;
+}
+
+.admin-order-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.order-status,
+.order-test,
+.order-normal {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 700;
 }
 
-.coupon-input {
-  display: flex;
-  gap: 8px;
+.order-status {
+  background: #303036;
+  color: #fff;
 }
 
-.coupon-input input {
-  flex: 1;
-  min-width: 0;
+.order-test {
+  background: #60430c;
+  color: #ffdf8a;
+}
+
+.order-normal {
+  background: #183d2b;
+  color: #9ce5b5;
+}
+
+.admin-order-customer {
+  padding: 12px 0;
+}
+
+.admin-order-customer p {
+  margin: 5px 0;
+}
+
+.admin-order-items {
+  padding: 12px 0;
+  border-top: 1px solid #303036;
+  border-bottom: 1px solid #303036;
+}
+
+.admin-order-items > b {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.order-item,
+.admin-order-totals p {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.order-item span,
+.admin-order-totals span {
+  color: #c5c5ca;
+}
+
+.admin-order-totals {
+  padding-top: 10px;
+}
+
+.admin-order-totals p {
+  margin: 7px 0;
+}
+
+.admin-order-totals .order-grand-total {
+  border-top: 1px solid #303036;
+  padding-top: 12px;
+  font-size: 18px;
+}
+
+.order-grand-total b {
+  color: #e32636;
+}
+
+.admin-order-notes {
+  background: #202024;
   padding: 12px;
   border-radius: 8px;
+  margin-top: 12px;
+  color: #ddd;
 }
 
-.coupon-input button {
-  padding: 10px 14px;
-  border-radius: 8px;
+.admin-order-change {
+  margin-top: 16px;
 }
 
-#couponMessage {
-  margin: 9px 0 0;
-}
-
-#couponMessage.success {
-  color: #39c979;
-}
-
-#couponMessage.error {
-  color: #ff6262;
+.admin-order-change select {
+  width: 100%;
+  margin-top: 7px;
 }

@@ -17,7 +17,7 @@
     <a class="brand" href="index.html">
       <span class="brand-mark">D</span>
       <span>
-        <b>ELIVERY GORDE</b>
+        <b>DELIVERY GORDE</b>
         <small>PAINEL ADMINISTRATIVO</small>
       </span>
     </a>
@@ -63,7 +63,6 @@
       </form>
 
       <p class="muted">
-      APENAS COLABORADORES DA CHOPPERIA GORDE .
         APENAS COLABORADORES DA CHOPPERIA GORDE.
       </p>
     </section>
@@ -84,6 +83,7 @@
 
       <!-- ABAS -->
       <nav class="admin-tabs">
+
         <button
           type="button"
           class="admin-tab active"
@@ -99,9 +99,20 @@
         >
           CUPONS
         </button>
+
+        <button
+          type="button"
+          class="admin-tab"
+          data-tab="orders"
+        >
+          PEDIDOS
+        </button>
+
       </nav>
 
-      <!-- ABA PRODUTOS -->
+      <!-- =========================
+           ABA PRODUTOS
+      ========================== -->
       <div id="productsSection" class="admin-grid">
 
         <form id="productForm" class="admin-panel">
@@ -195,7 +206,9 @@
 
       </div>
 
-      <!-- ABA CUPONS -->
+      <!-- =========================
+           ABA CUPONS
+      ========================== -->
       <section id="couponsSection" class="admin-grid" hidden>
 
         <form id="couponForm" class="admin-panel">
@@ -326,13 +339,67 @@
 
       </section>
 
+      <!-- =========================
+           ABA PEDIDOS
+      ========================== -->
+      <section id="ordersSection" class="admin-panel" hidden>
+
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">DELIVERY GORDE</span>
+            <h2>Gerenciar pedidos</h2>
+          </div>
+
+          <button
+            type="button"
+            class="secondary"
+            id="refreshOrders"
+          >
+            ATUALIZAR
+          </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="admin-grid">
+
+          <label>
+            Filtrar por status
+            <select id="orderStatusFilter">
+              <option value="all">Todos os status</option>
+              <option value="Novo">Novo</option>
+              <option value="Em preparo">Em preparo</option>
+              <option value="Saiu para entrega">Saiu para entrega</option>
+              <option value="Finalizado">Finalizado</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
+          </label>
+
+          <label>
+            Tipo de pedido
+            <select id="orderTypeFilter">
+              <option value="all">Todos os pedidos</option>
+              <option value="normal">Pedidos normais</option>
+              <option value="test">Pedidos de teste</option>
+            </select>
+          </label>
+
+        </div>
+
+        <!-- LISTA -->
+        <div id="adminOrders">
+          <p class="muted">Carregando pedidos...</p>
+        </div>
+
+      </section>
+
     </section>
+
   </main>
 
+  <!-- BIBLIOTECAS E SCRIPTS -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="config.js"></script>
   <script src="admin.js"></script>
-  
 
 </body>
 </html>

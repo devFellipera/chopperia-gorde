@@ -749,53 +749,99 @@ function renderCart() {
   // FINALIZAR PEDIDO
   // ==========================================
 
-  $("checkoutForm").onsubmit = async event => {
-    event.preventDefault();
 
-    if (!cart.length) {
-      alert("Seu carrinho está vazio.");
+$("checkoutForm").onsubmit = async event => {
+  event.preventDefault();
+
+  if (!cart.length) {
+    alert("Seu carrinho está vazio.");
+    return;
+  }
+
+  const name = $("customerName").value.trim();
+  const address = $("customerAddress").value.trim();
+  const payment = $("payment").value;
+  const notes = $("notes").value.trim();
+
+  if (!name || !address) {
+    alert("Preencha seu nome e endereço.");
+    return;
+  }
+
+  const phone = String(cfg.whatsapp || "").replace(/\D/g, "");
+
+  if (!phone) {
+    alert("Configure o WhatsApp no config.js.");
+    return;
+  }
+
+  if (!sb) {
+    alert("Não foi possível conectar ao banco de dados.");
+    return;
+  }
+
+  // Revalida o cupom antes de montar o pedido
+  if (appliedCoupon) {
+    const code = appliedCoupon.code;
+    const validCoupon = await applyCoupon(code, true);
+
+    if (!validCoupon) {
+      alert(
+        "Não foi possível confirmar seu cupom. Verifique o código e tente novamente."
+      );
       return;
     }
+  }
 
-    const name = $("customerName").value.trim();
-    const address = $("customerAddress").value.trim();
-    const payment = $("payment").value;
-    const notes = $("notes").value.trim();
+  const subtotal = getSubtotal();
+  const fee = Number(cfg.deliveryFee) || 0;
 
-    if (!name || !address) {
-      alert("Preencha seu nome e endereço.");
-      return;
+  const discount = Math.min(
+    Number(appliedCoupon?.discount) || 0,
+    subtotal
+  );
+
+  const total = Math.max(0, subtotal - discount + fee);
+
+  // Produtos salvos como cópia dos dados do momento da compra
+  const orderItems = cart.map(item => ({
+    product_id: item.id || null,
+    name: item.name,
+    price: Number(item.price),
+    quantity: Number(item.quantity)
+  }));
+
+  // Abre uma janela antes da comunicação com o banco
+  // para evitar bloqueio do navegador ao abrir o WhatsApp
+  const whatsappWindow = window.open("about:blank", "_blank");
+
+  try {
+    // Salva o pedido e recebe a numeração automática
+    const { data, error } = await sb.rpc("create_delivery_order", {
+      p_customer_name: name,
+      p_customer_address: address,
+      p_payment_method: payment,
+      p_items: orderItems,
+      p_subtotal: subtotal,
+      p_discount: discount,
+      p_delivery_fee: fee,
+      p_total: total,
+      p_coupon_code: appliedCoupon?.code || null,
+      p_notes: notes || null
+    });
+
+    if (error) {
+      throw error;
     }
 
-    // Revalida o cupom antes de montar o pedido
-    if (appliedCoupon) {
-      const code = appliedCoupon.code;
+    const orderNumber = data?.order_number;
 
-      const validCoupon = await applyCoupon(code, true);
-
-      if (!validCoupon) {
-        alert(
-          "Não foi possível confirmar seu cupom. Verifique o código e tente novamente."
-        );
-
-        return;
-      }
+    if (!orderNumber) {
+      throw new Error("O banco não retornou o número do pedido.");
     }
 
-    const subtotal = getSubtotal();
-    const fee = Number(cfg.deliveryFee) || 0;
-
-    const discount = Math.min(
-      Number(appliedCoupon?.discount) || 0,
-      subtotal
-    );
-
-    const total = Math.max(
-      0,
-      subtotal - discount + fee
-    );
-
-    let message = `*PEDIDO - CHOPPERIA GORDE*\n\n`;
+    // Monta a mensagem do WhatsApp
+    let message = `*PEDIDO #${orderNumber} - CHOPPERIA GORDE*\n\n`;
 
     message += `*Cliente:* ${name}\n`;
     message += `*Endereço:* ${address}\n\n`;
@@ -821,19 +867,33 @@ function renderCart() {
       message += `\nObservações: ${notes}`;
     }
 
-    const phone = String(cfg.whatsapp || "")
-      .replace(/\D/g, "");
+    message += `\n\n*Número do pedido: #${orderNumber}*`;
 
-    if (!phone) {
-      alert("Configure o WhatsApp no config.js.");
-      return;
+    const whatsappUrl =
+      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+    if (whatsappWindow) {
+      whatsappWindow.location.href = whatsappUrl;
+    } else {
+      window.location.href = whatsappUrl;
     }
 
-    window.open(
-      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-      "_blank"
+    alert(`Pedido #${orderNumber} registrado com sucesso!`);
+
+  } catch (error) {
+    console.error("Erro ao registrar pedido:", error);
+
+    if (whatsappWindow) {
+      whatsappWindow.close();
+    }
+
+    alert(
+      "Não foi possível registrar seu pedido. Tente novamente.\\n" +
+      (error.message || "")
     );
-  };
+  }
+};
+
 
   // ==========================================
   // INICIAR SISTEMA

@@ -64,28 +64,6 @@
     renderProducts();
   }
 
-  function renderCategories() {
-    const categories = [
-      "Todos",
-      ...new Set(products.map(p => p.category).filter(Boolean))
-    ];
-
-    $("categories").innerHTML = categories.map(cat => `
-      <button class="${category === cat ? "active" : ""}"
-        data-category="${esc(cat)}">
-        ${esc(cat)}
-      </button>
-    `).join("");
-
-    $("categories").querySelectorAll("[data-category]").forEach(button => {
-      button.onclick = () => {
-        category = button.dataset.category;
-        renderCategories();
-        renderProducts();
-      };
-    });
-  }
-
   function renderProducts() {
     const search = $("search").value.trim().toLowerCase();
 

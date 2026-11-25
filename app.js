@@ -499,9 +499,13 @@
     const categories = [
       "Todos",
       ...new Set(
+<<<<<<< HEAD
         products
           .map(product => product.category)
           .filter(Boolean)
+=======
+        products.map(p => p.category).filter(Boolean)
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
       )
     ];
 
@@ -517,6 +521,7 @@
       `)
       .join("");
 
+<<<<<<< HEAD
     $("categories")
       .querySelectorAll("[data-category]")
       .forEach(button => {
@@ -526,6 +531,14 @@
           renderCategories();
           renderProducts();
           saveState();
+=======
+    $("categories").querySelectorAll("[data-category]")
+      .forEach(button => {
+        button.onclick = () => {
+          category = button.dataset.category;
+          renderCategories();
+          renderProducts();
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
         };
       });
   }
@@ -558,6 +571,7 @@
       return;
     }
 
+<<<<<<< HEAD
     $("products").innerHTML = filtered
       .map(product => `
         <article class="product-card">
@@ -594,6 +608,30 @@
         button.onclick = () => {
           addToCart(button.dataset.add);
         };
+=======
+    $("products").innerHTML = filtered.map(p => `
+      <article class="product-card">
+        ${p.image_url
+          ? `<img src="${esc(p.image_url)}"
+              alt="${esc(p.name)}" loading="lazy">`
+          : ""}
+        <div class="product-info">
+          <small>${esc(p.category)}</small>
+          <h3>${esc(p.name)}</h3>
+          <p>${esc(p.description || "")}</p>
+          <strong>${money(p.price)}</strong>
+          <button class="primary" data-add="${esc(p.id)}">
+            ADICIONAR
+          </button>
+        </div>
+      </article>
+    `).join("");
+
+    $("products").querySelectorAll("[data-add]")
+      .forEach(button => {
+        button.onclick = () =>
+          addToCart(button.dataset.add);
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
       });
   }
 
@@ -603,13 +641,21 @@
 
   function addToCart(id) {
     const product = products.find(
+<<<<<<< HEAD
       item => String(item.id) === String(id)
+=======
+      p => String(p.id) === String(id)
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
     );
 
     if (!product) return;
 
     const item = cart.find(
+<<<<<<< HEAD
       cartItem => String(cartItem.id) === String(id)
+=======
+      p => String(p.id) === String(id)
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
     );
 
     if (item) {
@@ -631,6 +677,7 @@
 
   function renderCart() {
     const count = cart.reduce(
+<<<<<<< HEAD
       (sum, item) => sum + item.quantity,
       0
     );
@@ -646,6 +693,13 @@
     const total = Math.max(
       0,
       subtotal - discount + fee
+=======
+      (sum, p) => sum + p.quantity, 0
+    );
+
+    const subtotal = cart.reduce(
+      (sum, p) => sum + Number(p.price) * p.quantity, 0
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
     );
 
     $("cartBar").hidden = count === 0;
@@ -676,6 +730,7 @@
       `)
       .join("");
 
+<<<<<<< HEAD
     $("cartItems")
       .querySelectorAll("[data-minus]")
       .forEach(button => {
@@ -691,6 +746,21 @@
           changeQuantity(button.dataset.plus, 1);
         };
       });
+=======
+    $("cartItems").querySelectorAll("[data-minus]")
+      .forEach(button => {
+        button.onclick = () =>
+          changeQuantity(button.dataset.minus, -1);
+      });
+
+    $("cartItems").querySelectorAll("[data-plus]")
+      .forEach(button => {
+        button.onclick = () =>
+          changeQuantity(button.dataset.plus, 1);
+      });
+
+    const fee = Number(cfg.deliveryFee) || 0;
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
 
     $("subtotal").textContent = money(subtotal);
     $("delivery").textContent = money(fee);
@@ -714,7 +784,11 @@
 
   function changeQuantity(id, amount) {
     const item = cart.find(
+<<<<<<< HEAD
       product => String(product.id) === String(id)
+=======
+      p => String(p.id) === String(id)
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
     );
 
     if (!item) return;
@@ -723,7 +797,11 @@
 
     if (item.quantity <= 0) {
       cart = cart.filter(
+<<<<<<< HEAD
         product => String(product.id) !== String(id)
+=======
+        p => String(p.id) !== String(id)
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
       );
     }
 
@@ -774,6 +852,7 @@
       return;
     }
 
+<<<<<<< HEAD
     // Revalida o cupom antes de montar o pedido
     if (appliedCoupon) {
       const code = appliedCoupon.code;
@@ -801,6 +880,32 @@
       0,
       subtotal - discount + fee
     );
+=======
+    const subtotal = cart.reduce(
+      (sum, p) => sum + Number(p.price) * p.quantity,
+      0
+    );
+
+    // VALIDAÇÃO DO PEDIDO MÍNIMO
+    const minimumOrder = Number(cfg.minimumOrder ?? 20);
+
+    if (
+      Number.isFinite(minimumOrder) &&
+      subtotal < minimumOrder
+    ) {
+      const missing = minimumOrder - subtotal;
+
+      alert(
+        `Pedido mínimo: ${money(minimumOrder)}.\n` +
+        `Adicione mais ${money(missing)} em produtos para finalizar.`
+      );
+
+      return;
+    }
+
+    const fee = Number(cfg.deliveryFee) || 0;
+    const total = subtotal + fee;
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
 
     let message = `*PEDIDO - CHOPPERIA GORDE*\n\n`;
 
@@ -809,8 +914,14 @@
 
     message += `*PRODUTOS:*\n`;
 
+<<<<<<< HEAD
     cart.forEach(item => {
       message += `${item.quantity}x ${item.name} - ${money(item.price * item.quantity)}\n`;
+=======
+    cart.forEach(p => {
+      message +=
+        `${p.quantity}x ${p.name} - ${money(p.price * p.quantity)}\n`;
+>>>>>>> e991b3b834f50c55fe4635871517055937b57474
     });
 
     message += `\nSubtotal: ${money(subtotal)}`;
@@ -849,3 +960,4 @@
   loadProducts();
 
 })();
+          

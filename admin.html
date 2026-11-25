@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#111111">
+  <link rel="icon" href="assets/produtos/logo-gorde.jpg">
 
   <title>Admin | Chopperia Gorde</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,10 +15,9 @@
 
   <header class="topbar">
     <a class="brand" href="index.html">
-      <span class="brand-mark">G</span>
-
+      <span class="brand-mark">D</span>
       <span>
-        <b>CHOPPERIA GORDE</b>
+        <b>ELIVERY GORDE</b>
         <small>PAINEL ADMINISTRATIVO</small>
       </span>
     </a>
@@ -32,13 +31,10 @@
 
     <!-- LOGIN -->
     <section id="loginPanel" class="admin-panel narrow">
-
       <span class="eyebrow">ACESSO RESTRITO</span>
-
       <h1>Entrar no painel</h1>
 
       <form id="loginForm">
-
         <label>
           E-mail
           <input
@@ -64,42 +60,53 @@
         <button class="primary full" type="submit">
           ENTRAR
         </button>
-
       </form>
 
       <p class="muted">
-        O acesso é feito por uma conta autorizada no Supabase.
+        APENAS COLABORADORES DA CHOPPERIA GORDE.
       </p>
-
     </section>
 
     <!-- PAINEL ADMINISTRATIVO -->
     <section id="dashboard" hidden>
 
       <div class="section-heading">
-
         <div>
           <span class="eyebrow">GERENCIE SUA LOJA</span>
-          <h1>Produtos</h1>
+          <h1>Painel administrativo</h1>
         </div>
 
         <button id="logout" class="secondary" type="button">
           SAIR
         </button>
-
       </div>
 
-      <div class="admin-grid">
+      <!-- ABAS -->
+      <nav class="admin-tabs">
+        <button
+          type="button"
+          class="admin-tab active"
+          data-tab="products"
+        >
+          PRODUTOS
+        </button>
 
-        <!-- FORMULÁRIO DE PRODUTOS -->
+        <button
+          type="button"
+          class="admin-tab"
+          data-tab="coupons"
+        >
+          CUPONS
+        </button>
+      </nav>
+
+      <!-- ABA PRODUTOS -->
+      <div id="productsSection" class="admin-grid">
+
         <form id="productForm" class="admin-panel">
-
           <h2 id="formTitle">Adicionar produto</h2>
 
-          <input
-            id="productId"
-            type="hidden"
-          >
+          <input id="productId" type="hidden">
 
           <label>
             Nome do produto
@@ -151,16 +158,11 @@
           </label>
 
           <label class="check-label">
-            <input
-              id="pAvailable"
-              type="checkbox"
-              checked
-            >
+            <input id="pAvailable" type="checkbox" checked>
             Produto disponível
           </label>
 
           <div class="form-actions">
-
             <button class="primary" type="submit">
               SALVAR PRODUTO
             </button>
@@ -172,42 +174,164 @@
             >
               LIMPAR
             </button>
-
           </div>
-
         </form>
 
-      <!-- LISTA DE PRODUTOS -->
-    <section class="admin-panel products-panel">
+        <section class="admin-panel products-panel">
+          <h2>Produtos cadastrados</h2>
 
-        <h2>Produtos cadastrados</h2>
+          <label class="category-filter">
+            Filtrar produtos por categoria
+            <select id="categoryFilter">
+              <option value="all">Todas as categorias</option>
+            </select>
+          </label>
 
-        <label class="category-filter">
-          Filtrar produtos por categoria
+          <div id="adminProducts">
+            <p class="muted">Carregando produtos...</p>
+          </div>
+        </section>
 
-          <select id="categoryFilter">
-            <option value="all">Todas as categorias</option>
-          </select>
-        </label>
+      </div>
 
-        <div id="adminProducts">
-          <p class="muted">Carregando produtos...</p>
-        </div>
+      <!-- ABA CUPONS -->
+      <section id="couponsSection" class="admin-grid" hidden>
 
-    
+        <form id="couponForm" class="admin-panel">
+          <h2 id="couponFormTitle">Criar cupom</h2>
+
+          <input id="couponId" type="hidden">
+
+          <label>
+            Código do cupom
+            <input
+              id="cCode"
+              type="text"
+              required
+              maxlength="30"
+              placeholder="Ex.: GORDE10"
+            >
+          </label>
+
+          <label>
+            Nome do influenciador
+            <input
+              id="cInfluencer"
+              type="text"
+              required
+              placeholder="Nome do influenciador"
+            >
+          </label>
+
+          <label>
+            Tipo de desconto
+            <select id="cDiscountType">
+              <option value="percentage">Porcentagem (%)</option>
+              <option value="fixed">Valor fixo (R$)</option>
+            </select>
+          </label>
+
+          <label>
+            Desconto
+            <input
+              id="cDiscountValue"
+              type="number"
+              min="0.01"
+              step="0.01"
+              value="10"
+              required
+            >
+          </label>
+
+          <label>
+            Comissão do influenciador (%)
+            <input
+              id="cCommission"
+              type="number"
+              min="0"
+              max="100"
+              step="0.01"
+              value="20"
+              required
+            >
+          </label>
+
+          <label>
+            Pedido mínimo (R$)
+            <input
+              id="cMinOrder"
+              type="number"
+              min="0"
+              step="0.01"
+              value="30"
+              required
+            >
+          </label>
+
+          <label>
+            Desconto máximo (R$) — opcional
+            <input
+              id="cMaxDiscount"
+              type="number"
+              min="0.01"
+              step="0.01"
+              placeholder="Sem limite"
+            >
+          </label>
+
+          <label>
+            Limite de utilizações — opcional
+            <input
+              id="cUsageLimit"
+              type="number"
+              min="1"
+              step="1"
+              placeholder="Ilimitado"
+            >
+          </label>
+
+          <label>
+            Validade — opcional
+            <input id="cExpiresAt" type="datetime-local">
+          </label>
+
+          <label class="check-label">
+            <input id="cActive" type="checkbox" checked>
+            Cupom ativo
+          </label>
+
+          <div class="form-actions">
+            <button class="primary" type="submit">
+              SALVAR CUPOM
+            </button>
+
+            <button
+              class="secondary"
+              type="button"
+              id="clearCouponForm"
+            >
+              LIMPAR
+            </button>
+          </div>
+        </form>
+
+        <section class="admin-panel products-panel">
+          <h2>Cupons cadastrados</h2>
+
+          <div id="adminCoupons">
+            <p class="muted">Carregando cupons...</p>
+          </div>
+        </section>
+
+      </section>
 
     </section>
-
   </main>
 
-  <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- CONFIGURAÇÃO -->
   <script src="config.js"></script>
-
-  <!-- PAINEL ADMINISTRATIVO -->
   <script src="admin.js"></script>
+  
 
 </body>
 </html>

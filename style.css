@@ -981,3 +981,126 @@ footer small {
   background: #191919;
   color: #fff;
 }
+
+
+/* ABAS DO PAINEL ADMINISTRATIVO */
+.admin-tabs {
+  display: flex;
+  gap: 10px;
+  margin: 24px 0;
+  border-bottom: 1px solid rgba(255,255,255,.10);
+  padding-bottom: 12px;
+}
+
+.admin-tab {
+  border: 1px solid rgba(255,255,255,.12);
+  background: #151518;
+  color: #aaa;
+  padding: 12px 22px;
+  border-radius: 9px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.admin-tab:hover {
+  border-color: #e32636;
+  color: #fff;
+}
+
+.admin-tab.active {
+  background: #e32636;
+  border-color: #e32636;
+  color: #fff;
+}
+
+#couponsSection[hidden],
+#productsSection[hidden],
+#dashboard[hidden],
+#loginPanel[hidden] {
+  display: none !important;
+}
+
+#adminCoupons .admin-product {
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#adminCoupons .admin-product small {
+  display: block;
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+#couponForm label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#couponForm input,
+#couponForm select {
+  width: 100%;
+}
+
+@media (max-width: 600px) {
+  .admin-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .admin-tab {
+    padding: 12px 10px;
+  }
+
+  #adminCoupons .admin-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+/* CUPOM DE DESCONTO */
+.coupon-box {
+  margin: 18px 0;
+  padding: 14px;
+  background: #171719;
+  border: 1px solid rgba(255,255,255,.10);
+  border-radius: 12px;
+}
+
+.coupon-box label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.coupon-input {
+  display: flex;
+  gap: 8px;
+}
+
+.coupon-input input {
+  flex: 1;
+  min-width: 0;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.coupon-input button {
+  padding: 10px 14px;
+  border-radius: 8px;
+}
+
+#couponMessage {
+  margin: 9px 0 0;
+}
+
+#couponMessage.success {
+  color: #39c979;
+}
+
+#couponMessage.error {
+  color: #ff6262;
+}

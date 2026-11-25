@@ -36,3 +36,4 @@ with check (exists (select 1 from public.store_admins a where a.user_id = auth.u
 -- Depois de criar o usuário administrador em Authentication > Users,
 -- copie o UUID dele e execute:
 -- insert into public.store_admins (user_id) values ('UUID-DO-ADMIN');
+
